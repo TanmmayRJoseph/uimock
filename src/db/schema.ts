@@ -23,6 +23,8 @@ export const users = pgTable(
       .notNull()
       .default("credentials"),
 
+    providerAccountId: varchar("provider_account_id", { length: 255 }),
+
     passwordHash: varchar("password_hash", { length: 255 }).notNull(),
 
     createdAt: timestamp("created_at", { withTimezone: true })
