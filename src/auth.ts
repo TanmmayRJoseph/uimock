@@ -1,7 +1,6 @@
 import NextAuth from "next-auth";
 import GithubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
-
 import db from "@/db/drizzle";
 import { users } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
@@ -80,6 +79,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   // Callbacks
   // ============================
   callbacks: {
+    // 1️⃣ First thing in this object is signIn
     async signIn({ user, account }) {
       if (account?.provider === "github") {
         const githubId = account.providerAccountId;
@@ -116,5 +116,33 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       return true;
     },
+
+    async jwt({ token, user }: any) {
+      // this method basically does what is if it gets token it takes values from the user and stores it in the DB
+      if (user) {
+        token.id = user.id;
+        token.name = user.name;
+      }
+
+      return token;
+    },
+
+    async session({ session, token }: any) {
+      // this method basically does what is if it gets session it takes values from the user and stores it in the DB
+
+      if (session.user) {
+        session.user.id = token.id as string;
+      }
+
+      return session;
+    },
   },
+
+  //4️⃣ Fourth thing in this object is pages
+  pages: {
+    signIn: "/auth/login", //here it tells where will it run
+    error: "/auth/login", // error will be shown at the same page
+  },
+
+  secret: process.env.AUTH_SECRET,
 });
