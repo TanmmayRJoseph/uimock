@@ -84,9 +84,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (account?.provider === "github") {
         const githubId = account.providerAccountId;
 
-        console.log("GitHub Account:", account);
-        console.log("GitHub User:", user);
-
         const existingUser = await db
           .select()
           .from(users)
@@ -99,42 +96,42 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           .limit(1)
           .then((res) => res[0]);
 
-        // 🆕 First-time GitHub login
         if (!existingUser) {
-          await db.insert(users).values({
-            id: user.id, // 🔥 THIS IS THE FIX
-            name: user.name,
-            email: user.email ?? null,
-            image: user.image ?? null,
-            provider: "github",
-            providerAccountId: githubId,
-            passwordHash: "",
-          });
-        }
+          const [createdUser] = await db
+            .insert(users)
+            .values({
+              name: user.name,
+              email: user.email,
+              image: user.image,
+              provider: "github",
+              providerAccountId: githubId,
+              passwordHash: "",
+            })
+            .returning();
 
-        return true;
+          // 🔥 attach DB id
+          user.id = createdUser.id;
+        } else {
+          user.id = existingUser.id;
+        }
       }
 
       return true;
     },
 
-    async jwt({ token, user }: any) {
-      // this method basically does what is if it gets token it takes values from the user and stores it in the DB
-      if (user) {
-        token.id = user.id;
-        token.name = user.name;
+    // 🔐 1️⃣ Persist DB user id in JWT
+    async jwt({ token, user }) {
+      if (user?.id) {
+        token.userId = user.id; // DB ID
       }
-
       return token;
     },
 
-    async session({ session, token }: any) {
-      // this method basically does what is if it gets session it takes values from the user and stores it in the DB
-
-      if (session.user) {
-        session.user.id = token.id as string;
+    // 🧠 2️⃣ Expose DB user id in session
+    async session({ session, token }) {
+      if (session.user && token.userId) {
+        session.user.id = token.userId as string;
       }
-
       return session;
     },
   },
