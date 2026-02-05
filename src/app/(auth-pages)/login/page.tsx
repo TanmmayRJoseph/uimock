@@ -1,46 +1,9 @@
-"use client";
-
-import { motion } from "framer-motion";
-import { Github } from "lucide-react";
-import { login } from "@/actions/authActions";
+import LoginForm from "@/components/auth/LoginForm";
 
 export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-zinc-900 via-black to-zinc-800">
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className="w-[380px]"
-      >
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-950/80 backdrop-blur shadow-xl p-6">
-          {/* Header */}
-          <div className="text-center mb-6">
-            <h1 className="text-2xl font-bold text-white">
-              Welcome Back 👋
-            </h1>
-            <p className="text-sm text-zinc-400 mt-1">
-              Sign in to continue to your dashboard
-            </p>
-          </div>
-
-          {/* GitHub Button */}
-          <motion.button
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-            onClick={login}
-            className="w-full flex items-center justify-center gap-2 rounded-xl bg-white text-black font-medium py-3 hover:bg-zinc-200 transition"
-          >
-            <Github className="w-5 h-5" />
-            Continue with GitHub
-          </motion.button>
-
-          {/* Footer */}
-          <p className="text-xs text-center text-zinc-500 mt-4">
-            By continuing, you agree to our Terms & Privacy Policy
-          </p>
-        </div>
-      </motion.div>
+      <LoginForm />
     </div>
   );
 }
