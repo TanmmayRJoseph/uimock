@@ -102,6 +102,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         // 🆕 First-time GitHub login
         if (!existingUser) {
           await db.insert(users).values({
+            id: user.id, // 🔥 THIS IS THE FIX
             name: user.name,
             email: user.email ?? null,
             image: user.image ?? null,
