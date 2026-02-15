@@ -13,18 +13,23 @@ export function buildUIScreenPrompt({
   device: string;
 }) {
   return `
-You are an expert UI engineer.
+You are a senior frontend engineer.
 
-Generate a ${device}-first ${style} UI for a "${appType}" app.
+Generate a ${device}-first ${style} UI screen for a "${appType}" app.
 
 Screen: ${screenName}
 Theme: ${theme}
 
-Rules:
-- Use semantic HTML
+STRICT RULES:
+- Return ONLY a single root <div> element.
+- Do NOT include <!DOCTYPE>, <html>, <head>, <body>
+- Do NOT include Tailwind CDN
+- Do NOT include markdown code fences
+- Do NOT explain anything
+- Output raw HTML only
 - Use Tailwind CSS classes
-- No explanations
-- Return ONLY HTML
+
+Your response must start with <div and end with </div>.
 `;
 }
 
@@ -37,9 +42,9 @@ export function buildEditScreenPrompt({
   userPrompt: string;
 }) {
   return `
-You are an expert UI engineer.
+You are a senior frontend engineer.
 
-Here is the existing HTML UI:
+Here is the existing UI markup:
 ---
 ${existingHtml}
 ---
@@ -47,10 +52,40 @@ ${existingHtml}
 Task:
 ${userPrompt}
 
-Rules:
-- Modify ONLY what is necessary
-- Keep Tailwind CSS
-- Do not add explanations
-- Return ONLY updated HTML
+STRICT RULES:
+- Return ONLY updated markup
+- Do NOT include <!DOCTYPE>, <html>, <head>, <body>
+- Do NOT include markdown (no \`\`\`)
+- Do NOT include explanations
+- Keep Tailwind CSS classes
+- Keep the structure similar unless modification is required
+- Output must start with <div and end with </div>
+
+Return raw HTML only.
 `;
 }
+
+
+
+
+export function cleanHtmlOutput(html: string) {
+  if (!html) return "";
+
+  let cleaned = html
+    .replace(/```html/g, "")
+    .replace(/```/g, "")
+    .trim();
+
+  // Remove full document wrappers if model still sends them
+  cleaned = cleaned
+    .replace(/<!DOCTYPE[^>]*>/i, "")
+    .replace(/<html[^>]*>/i, "")
+    .replace(/<\/html>/i, "")
+    .replace(/<head[\s\S]*?<\/head>/i, "")
+    .replace(/<body[^>]*>/i, "")
+    .replace(/<\/body>/i, "")
+    .trim();
+
+  return cleaned;
+}
+

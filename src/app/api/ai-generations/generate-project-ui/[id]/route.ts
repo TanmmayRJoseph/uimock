@@ -6,7 +6,7 @@ import { projects, screens, aiGenerations } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { generateProjectUISchema } from "@/schemas/zodSchema";
 import openai from "@/lib/openai";
-import { buildUIScreenPrompt } from "@/prompt/promptBuilders";
+import { buildUIScreenPrompt, cleanHtmlOutput } from "@/prompt/promptBuilders";
 
 export async function POST(
   req: NextRequest,
@@ -18,7 +18,7 @@ export async function POST(
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    
+
     const params = await context.params;
     const projectId = params.id;
 
@@ -65,7 +65,9 @@ export async function POST(
         temperature: 0.3,
       });
 
-      const html = completion.choices[0].message.content ?? "";
+      let html = completion.choices[0]?.message?.content ?? "";
+
+      html = cleanHtmlOutput(html);
 
       // 5️⃣ Save screen
       const [screen] = await db
