@@ -1,4 +1,4 @@
-// src/app/api/ai/generate-project-ui/[projectId]/route.ts
+// src/app/api/ai/generate-project-ui/[id]/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import db from "@/db/drizzle";
