@@ -33,7 +33,7 @@ export async function POST(req: Request) {
   } catch (error: any) {
     // Zod error
     if (error?.name === "ZodError") {
-      return NextResponse.json({ error: error.errors }, { status: 400 });
+      return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
     console.error("POST /api/projects error:", error);

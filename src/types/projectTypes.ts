@@ -15,6 +15,15 @@ export interface GenerateProjectUIData {
 
 export interface ProjectState {
   projectId: string | null;
+
+  // 🔥 AI-only data (NOT stored in DB)
+  projectInput: {
+    appType: string;
+    screenName: string;
+    style: string;
+    device: string;
+  } | null;
+
   screens: Screen[];
   activeScreenId: string | null;
 
@@ -24,12 +33,26 @@ export interface ProjectState {
 
   // Actions
   setProject: (id: string) => void;
-  setScreens: (screens: Screen[]) => void;
-  setActiveScreen: (id: string) => void;
+
+  // 🔥 Add this
+  setProjectInput: (data: {
+    appType: string;
+    screenName: string;
+    style: string;
+    device: string;
+  }) => void;
 
   generateProjectUI: (data: GenerateProjectUIData) => Promise<void>;
   editScreen: (screenId: string, prompt: string) => Promise<void>;
 
+  // 🔥 Only DB fields now
+  makeProject: (form: {
+    name: string;
+    description: string;
+    theme: string;
+  }) => Promise<any>;
+
   updateScreenHtml: (screenId: string, html: string) => void;
   reset: () => void;
 }
+

@@ -8,6 +8,7 @@ import {
 
 export const useProjectStore = create<ProjectState>((set, get) => ({
   projectId: null,
+  projectInput: null, // ✅ ADD THIS
   screens: [],
   activeScreenId: null,
 
@@ -18,7 +19,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   // ---------------------------
   // BASIC SETTERS
   // ---------------------------
-
+  setProjectInput: (data) => set({ projectInput: data }),
   setProject: (id: string) => set({ projectId: id }),
 
   setScreens: (screens: Screen[]) =>
@@ -32,15 +33,14 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   updateScreenHtml: (screenId: string, html: string) =>
     set((state) => ({
       screens: state.screens.map((screen) =>
-        screen.id === screenId
-          ? { ...screen, htmlCode: html }
-          : screen
+        screen.id === screenId ? { ...screen, htmlCode: html } : screen,
       ),
     })),
 
   reset: () =>
     set({
       projectId: null,
+      projectInput: null,
       screens: [],
       activeScreenId: null,
       error: null,
@@ -61,20 +61,17 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
     try {
       await api.post(
         `/api/ai-generations/generate-project-ui/${projectId}`,
-        data
+        data,
       );
 
-
-      // Fetch real DB screens after generation
       const screensRes = await api.get<Screen[]>(
-        `/api/screen/get-all-screen/${projectId}`
+        `/api/screen/get-all-screen/${projectId}`,
       );
 
       set({
         screens: screensRes.data,
         activeScreenId: screensRes.data[0]?.id ?? null,
       });
-
     } catch (err: any) {
       set({ error: err?.response?.data?.error || "Generation failed" });
     } finally {
@@ -92,17 +89,43 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
     try {
       const res = await api.post<{ updatedHtml: string }>(
         `/api/ai-generations/edit-screen`,
-        { screenId, prompt }
+        { screenId, prompt },
       );
 
-      const updatedHtml = res.data.updatedHtml;
-
-      get().updateScreenHtml(screenId, updatedHtml);
-
+      get().updateScreenHtml(screenId, res.data.updatedHtml);
     } catch (err: any) {
       set({ error: err?.response?.data?.error || "Edit failed" });
     } finally {
       set({ isEditing: false });
+    }
+  },
+
+  // ---------------------------
+  // CREATE PROJECT
+  // ---------------------------
+
+  makeProject: async (form: {
+    name: string;
+    description: string;
+    theme: string;
+  }) => {
+    set({ error: null });
+
+    try {
+      const res = await api.post("/api/projects/makeProjects", form);
+      const project = res.data;
+
+      set({
+        projectId: project.id,
+      });
+
+      return project;
+    } catch (err: any) {
+      const message =
+        err?.response?.data?.error || err?.message || "Project creation failed";
+
+      set({ error: message });
+      throw new Error(message);
     }
   },
 }));
