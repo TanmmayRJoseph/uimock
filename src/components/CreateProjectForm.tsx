@@ -51,57 +51,62 @@ export default function CreateProjectForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-zinc-950 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-[#0B0F19] px-4 relative overflow-hidden">
+      {/* Background Gradient Glow */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_#4f46e5_0%,_transparent_50%)] opacity-20" />
+
       <motion.div
-        initial={{ opacity: 0, y: 40 }}
+        initial={{ opacity: 0, y: 60 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="w-full max-w-lg"
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="w-full max-w-lg relative"
       >
-        <Card className="bg-zinc-900 border-zinc-800 shadow-2xl">
+        <Card className="bg-[#111827]/80 backdrop-blur-xl border border-[#1F2937] shadow-2xl rounded-2xl">
           <CardHeader>
-            <CardTitle className="text-2xl font-bold text-white">
+            <CardTitle className="text-3xl font-semibold text-white tracking-tight">
               Create New Project
             </CardTitle>
+            <p className="text-sm text-gray-400 mt-1">
+              Start building your AI-generated UI experience.
+            </p>
           </CardHeader>
 
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Project Name */}
               <div className="space-y-2">
-                <Label className="text-zinc-300">Project Name</Label>
+                <Label className="text-gray-400">Project Name</Label>
                 <Input
                   value={form.name}
-                  onChange={(e) =>
-                    setForm({ ...form, name: e.target.value })
-                  }
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
                   required
-                  className="bg-zinc-800 border-zinc-700 text-white"
+                  className="bg-[#1F2937] border-[#2A3441] text-white focus:ring-2 focus:ring-indigo-500 transition-all"
                 />
               </div>
 
+              {/* Description */}
               <div className="space-y-2">
-                <Label className="text-zinc-300">Description</Label>
+                <Label className="text-gray-400">Description</Label>
                 <Textarea
                   value={form.description}
                   onChange={(e) =>
                     setForm({ ...form, description: e.target.value })
                   }
-                  className="bg-zinc-800 border-zinc-700 text-white"
+                  className="bg-[#1F2937] border-[#2A3441] text-white focus:ring-2 focus:ring-indigo-500 transition-all"
                 />
               </div>
 
+              {/* Theme Select */}
               <div className="space-y-2">
-                <Label className="text-zinc-300">Theme</Label>
+                <Label className="text-gray-400">Theme</Label>
                 <Select
                   value={form.theme}
-                  onValueChange={(value) =>
-                    setForm({ ...form, theme: value })
-                  }
+                  onValueChange={(value) => setForm({ ...form, theme: value })}
                 >
-                  <SelectTrigger className="bg-zinc-800 border-zinc-700 text-white">
+                  <SelectTrigger className="bg-[#1F2937] border-[#2A3441] text-white focus:ring-2 focus:ring-indigo-500">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-zinc-900 border-zinc-800 text-white">
+                  <SelectContent className="bg-[#111827] border border-[#1F2937] text-white">
                     <SelectItem value="light">Light</SelectItem>
                     <SelectItem value="dark">Dark</SelectItem>
                     <SelectItem value="system">System</SelectItem>
@@ -109,10 +114,11 @@ export default function CreateProjectForm() {
                 </Select>
               </div>
 
+              {/* CTA */}
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-white text-black"
+                className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-medium rounded-xl shadow-lg shadow-indigo-500/20 transition-all duration-300"
               >
                 {loading ? "Creating..." : "Create Project"}
               </Button>
@@ -120,10 +126,7 @@ export default function CreateProjectForm() {
           </CardContent>
         </Card>
 
-        <GenerateUIAfterCreate
-          open={showGenerator}
-          theme={form.theme}   // 🔥 pass theme here
-        />
+        <GenerateUIAfterCreate open={showGenerator} theme={form.theme} />
       </motion.div>
     </div>
   );

@@ -19,7 +19,7 @@ export interface ProjectState {
   // 🔥 AI-only data (NOT stored in DB)
   projectInput: {
     appType: string;
-    screenName: string;
+    screens: string[];
     style: string;
     device: string;
   } | null;
@@ -37,11 +37,12 @@ export interface ProjectState {
   // 🔥 Add this
   setProjectInput: (data: {
     appType: string;
-    screenName: string;
+    screens: string[];
     style: string;
     device: string;
   }) => void;
 
+  setScreens: (screens: Screen[]) => void;
   setActiveScreen: (screenId: string) => void;
   generateProjectUI: (data: GenerateProjectUIData) => Promise<void>;
   editScreen: (screenId: string, prompt: string) => Promise<void>;

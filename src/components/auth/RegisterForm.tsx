@@ -3,21 +3,29 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Github } from "lucide-react";
-import { login, loginWithEmail } from "@/actions/authActions";
+import { login } from "@/actions/authActions";
+import axios from "axios";
 
-export default function LoginForm() {
+export default function RegisterForm() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleCredentialsLogin = async () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
     try {
-      setLoading(true);
-      setError(null);
-      await loginWithEmail(email, password);
-    } catch (err: any) {
-      setError("Invalid email or password");
+      const response = await axios.post("/api/auth/register", {
+        name,
+        email,
+        password,
+      });
+      console.log(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
       setLoading(false);
     }
   };
@@ -29,60 +37,59 @@ export default function LoginForm() {
       transition={{ duration: 0.6, ease: "easeOut" }}
       className="w-[420px] relative"
     >
-      {/* Card */}
       <div className="relative rounded-3xl border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl p-8">
-
-        {/* Glow Border Effect */}
+        {/* Soft Gradient Layer */}
         <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-purple-600/10 to-indigo-600/10 pointer-events-none" />
 
         {/* Header */}
         <div className="text-center mb-8 relative">
           <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">
-            Welcome Back
+            Create Account
           </h1>
           <p className="text-sm text-gray-400 mt-2">
-            Sign in to continue building
+            Start building your AI powered projects
           </p>
         </div>
 
-        {/* Form */}
         <div className="space-y-5 relative">
+          {/* Name */}
+          <input
+            type="text"
+            placeholder="Full name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full rounded-2xl bg-black/40 border border-white/10 px-4 py-3 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-600/60 transition-all"
+          />
 
           {/* Email */}
-          <div className="space-y-2">
-            <input
-              type="email"
-              placeholder="Email address"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-2xl bg-black/40 border border-white/10 px-4 py-3 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-600/60 transition-all"
-            />
-          </div>
+          <input
+            type="email"
+            placeholder="Email address"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full rounded-2xl bg-black/40 border border-white/10 px-4 py-3 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-600/60 transition-all"
+          />
 
           {/* Password */}
-          <div className="space-y-2">
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-2xl bg-black/40 border border-white/10 px-4 py-3 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-600/60 transition-all"
-            />
-          </div>
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full rounded-2xl bg-black/40 border border-white/10 px-4 py-3 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-600/60 transition-all"
+          />
 
-          {error && (
-            <p className="text-xs text-red-400">{error}</p>
-          )}
+          {error && <p className="text-xs text-red-400">{error}</p>}
 
-          {/* Email Button */}
+          {/* Register Button */}
           <motion.button
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
             disabled={loading}
-            onClick={handleCredentialsLogin}
+            onClick={handleSubmit}
             className="w-full rounded-2xl py-3 font-medium bg-gradient-to-r from-purple-600 to-indigo-600 hover:shadow-lg hover:shadow-purple-600/30 transition-all duration-300"
           >
-            {loading ? "Signing in..." : "Sign in with Email"}
+            {loading ? "Creating Account..." : "Create Account"}
           </motion.button>
         </div>
 
@@ -93,7 +100,7 @@ export default function LoginForm() {
           <div className="h-px flex-1 bg-white/10" />
         </div>
 
-        {/* GitHub Button */}
+        {/* GitHub Register */}
         <motion.button
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}

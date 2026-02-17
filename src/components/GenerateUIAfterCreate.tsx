@@ -62,59 +62,61 @@ export default function GenerateUIAfterCreate({ open, theme }: Props) {
 
   return (
     <Dialog open={open}>
-      <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-md">
+      <DialogContent className="bg-[#111827]/90 backdrop-blur-xl border border-[#1F2937] text-white max-w-md rounded-2xl shadow-2xl">
         <DialogHeader>
-          <DialogTitle>Configure AI Generation</DialogTitle>
-          <DialogDescription className="text-zinc-400">
+          <DialogTitle className="text-2xl font-semibold">
+            Configure AI Generation
+          </DialogTitle>
+          <DialogDescription className="text-gray-400">
             Provide details to generate your app UI.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4 mt-4">
-          <div>
-            <Label>App Type</Label>
+        <div className="space-y-5 mt-4">
+          <div className="space-y-2">
+            <Label className="text-gray-400">App Type</Label>
             <Input
               value={appType}
               onChange={(e) => setAppType(e.target.value)}
               placeholder="Food Delivery App"
-              className="bg-zinc-800 border-zinc-700"
+              className="bg-[#1F2937] border-[#2A3441] text-white focus:ring-2 focus:ring-indigo-500 transition-all"
             />
           </div>
 
-          <div>
-            <Label>Screens (comma separated)</Label>
+          <div className="space-y-2">
+            <Label className="text-gray-400">Screens (comma separated)</Label>
             <Textarea
               value={screensInput}
               onChange={(e) => setScreensInput(e.target.value)}
               placeholder="Login, Home, Cart, Profile"
-              className="bg-zinc-800 border-zinc-700"
+              className="bg-[#1F2937] border-[#2A3441] text-white focus:ring-2 focus:ring-indigo-500 transition-all"
             />
           </div>
 
-          <div>
-            <Label>Style</Label>
+          <div className="space-y-2">
+            <Label className="text-gray-400">Style</Label>
             <Input
               value={style}
               onChange={(e) => setStyle(e.target.value)}
-              placeholder="modern minimal"
-              className="bg-zinc-800 border-zinc-700"
+              placeholder="Modern minimal"
+              className="bg-[#1F2937] border-[#2A3441] text-white focus:ring-2 focus:ring-indigo-500 transition-all"
             />
           </div>
 
-          <div>
-            <Label>Device</Label>
+          <div className="space-y-2">
+            <Label className="text-gray-400">Device</Label>
             <Input
               value={device}
               onChange={(e) => setDevice(e.target.value)}
-              placeholder="mobile"
-              className="bg-zinc-800 border-zinc-700"
+              placeholder="Mobile"
+              className="bg-[#1F2937] border-[#2A3441] text-white focus:ring-2 focus:ring-indigo-500 transition-all"
             />
           </div>
 
           {!isGenerating ? (
             <Button
               onClick={handleGenerate}
-              className="w-full bg-white text-black"
+              className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-medium rounded-xl shadow-lg shadow-indigo-500/20 transition-all duration-300 flex items-center justify-center gap-2"
             >
               <Sparkles size={16} />
               Generate UI
@@ -123,10 +125,10 @@ export default function GenerateUIAfterCreate({ open, theme }: Props) {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="flex flex-col items-center gap-4"
+              className="flex flex-col items-center gap-4 py-4"
             >
-              <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin" />
-              <p className="text-zinc-400 text-sm text-center">
+              <div className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+              <p className="text-gray-400 text-sm text-center">
                 Generating UI...
               </p>
             </motion.div>

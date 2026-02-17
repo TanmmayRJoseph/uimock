@@ -40,32 +40,38 @@ export default function DashboardPage() {
     fetchProjects();
   }, [status, session?.user?.id]);
 
-  // Optional: prevent flicker while session loads
   if (status === "loading") {
     return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-        <Skeleton className="h-10 w-40 bg-zinc-800" />
+      <div className="min-h-screen bg-[#0B0C10] flex items-center justify-center">
+        <Skeleton className="h-10 w-40 bg-white/10" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white">
+    <div className="relative min-h-screen bg-[#0B0C10] text-white overflow-hidden">
+
+      {/* Background Glow */}
+      <div className="absolute top-[-250px] left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] bg-purple-600/10 blur-[160px] rounded-full pointer-events-none" />
+
       {/* Header */}
-      <div className="border-b border-zinc-800 bg-zinc-900/40 backdrop-blur sticky top-0 z-10">
+      <div className="sticky top-0 z-20 backdrop-blur-xl bg-white/5 border-b border-white/10">
         <div className="max-w-6xl mx-auto px-6 py-6 flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">
-              Your Projects
+              Your{" "}
+              <span className="bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">
+                Projects
+              </span>
             </h1>
-            <p className="text-zinc-400 text-sm mt-1">
+            <p className="text-gray-400 text-sm mt-1">
               Manage and build your AI-generated UI projects
             </p>
           </div>
 
           <Button
             onClick={() => router.push("/make-project")}
-            className="gap-2 bg-white text-black hover:bg-zinc-200"
+            className="gap-2 rounded-2xl px-6 bg-gradient-to-r from-purple-600 to-indigo-600 hover:scale-105 transition-all duration-300 shadow-lg shadow-purple-600/30"
           >
             <Plus size={16} />
             Create Project
@@ -74,68 +80,79 @@ export default function DashboardPage() {
       </div>
 
       {/* Content */}
-      <div className="max-w-6xl mx-auto px-6 py-10">
-        {/* Loading */}
+      <div className="relative max-w-6xl mx-auto px-6 py-12">
+
+        {/* Loading State */}
         {loading && (
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-3 gap-8">
             {[...Array(6)].map((_, i) => (
-              <Skeleton key={i} className="h-32 rounded-2xl bg-zinc-800" />
+              <Skeleton
+                key={i}
+                className="h-36 rounded-3xl bg-white/5 border border-white/10"
+              />
             ))}
           </div>
         )}
 
-        {/* Empty */}
+        {/* Empty State */}
         {!loading && projects.length === 0 && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="flex flex-col items-center justify-center py-24 text-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col items-center justify-center py-28 text-center"
           >
-            <Folder size={48} className="text-zinc-600 mb-4" />
-            <h2 className="text-xl font-semibold mb-2">
+            <div className="p-6 rounded-3xl bg-gradient-to-br from-purple-600/10 to-indigo-600/10 mb-6">
+              <Folder size={48} className="text-purple-400" />
+            </div>
+
+            <h2 className="text-2xl font-semibold mb-3">
               No projects yet
             </h2>
-            <p className="text-zinc-500 mb-6">
-              Create your first project and start generating UI instantly.
+
+            <p className="text-gray-400 mb-8 max-w-md">
+              Create your first AI-powered UI project and start building faster.
             </p>
+
             <Button
               onClick={() => router.push("/make-project")}
-              className="bg-white text-black hover:bg-zinc-200"
+              className="rounded-2xl px-8 bg-gradient-to-r from-purple-600 to-indigo-600 hover:scale-105 transition-all duration-300 shadow-lg shadow-purple-600/30"
             >
               Create Project
             </Button>
           </motion.div>
         )}
 
-        {/* Projects */}
+        {/* Projects Grid */}
         {!loading && projects.length > 0 && (
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-3 gap-8">
             {projects.map((p) => (
               <motion.div
                 key={p.id}
-                whileHover={{ y: -6 }}
-                transition={{ type: "spring", stiffness: 300 }}
+                whileHover={{ y: -8, scale: 1.02 }}
+                transition={{ type: "spring", stiffness: 250 }}
               >
                 <Card
                   onClick={() => router.push(`/project/${p.id}`)}
-                  className="bg-zinc-900 border-zinc-800 hover:border-zinc-700 cursor-pointer rounded-2xl transition-all"
+                  className="relative rounded-3xl bg-white/5 border border-white/10 backdrop-blur-xl hover:border-purple-500/40 cursor-pointer transition-all duration-500 shadow-xl"
                 >
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold">
+                  <CardContent className="p-7">
+                    <div className="flex items-center gap-4 mb-5">
+
+                      <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center text-white font-bold text-lg shadow-md">
                         {p.name?.charAt(0).toUpperCase()}
                       </div>
+
                       <div>
-                        <h3 className="font-semibold text-lg">
+                        <h3 className="font-semibold text-lg tracking-tight">
                           {p.name}
                         </h3>
-                        <p className="text-xs text-zinc-500">
+                        <p className="text-xs text-gray-400">
                           {p.theme || "Default Theme"}
                         </p>
                       </div>
                     </div>
 
-                    <p className="text-sm text-zinc-400 line-clamp-2">
+                    <p className="text-sm text-gray-400 line-clamp-2 leading-relaxed">
                       {p.description || "No description provided."}
                     </p>
                   </CardContent>
