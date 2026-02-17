@@ -42,6 +42,7 @@ export interface ProjectState {
     device: string;
   }) => void;
 
+  setActiveScreen: (screenId: string) => void;
   generateProjectUI: (data: GenerateProjectUIData) => Promise<void>;
   editScreen: (screenId: string, prompt: string) => Promise<void>;
 
@@ -55,4 +56,3 @@ export interface ProjectState {
   updateScreenHtml: (screenId: string, html: string) => void;
   reset: () => void;
 }
-

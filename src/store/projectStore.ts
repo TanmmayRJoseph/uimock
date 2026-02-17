@@ -20,6 +20,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   // BASIC SETTERS
   // ---------------------------
   setProjectInput: (data) => set({ projectInput: data }),
+
   setProject: (id: string) => set({ projectId: id }),
 
   setScreens: (screens: Screen[]) =>
