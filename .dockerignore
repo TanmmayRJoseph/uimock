@@ -1,0 +1,65 @@
+# ================================
+# .dockerignore
+# ================================
+# This file tells Docker which files/folders to exclude when copying to the container
+# Similar to .gitignore, but for Docker builds
+# Excluding unnecessary files reduces build time and image size
+
+# Node.js dependencies (will be installed fresh in container)
+node_modules
+npm-debug.log
+yarn-error.log
+yarn-debug.log
+.pnpm-debug.log
+
+# Next.js build outputs (will be generated during Docker build)
+.next
+out
+build
+
+# Environment files (should be passed at runtime via docker run or docker-compose)
+.env
+.env.local
+.env.development
+.env.production
+.env*.local
+
+# Git files (not needed in production image)
+.git
+.gitignore
+
+# Testing
+coverage
+.nyc_output
+
+# IDE and editor files
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Docker files themselves
+Dockerfile
+.dockerignore
+docker-compose.yml
+
+# Documentation
+README.md
+*.md
+
+# Logs
+logs
+*.log
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Vercel
+.vercel
+
+# Misc
+.cache
+temp
+tmp
