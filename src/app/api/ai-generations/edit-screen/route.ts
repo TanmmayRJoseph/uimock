@@ -55,9 +55,9 @@ export async function POST(req: NextRequest) {
 
     // 5️⃣ Call AI
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "gpt-4.1",
       messages: [{ role: "user", content: aiPrompt }],
-      temperature: 0.25,
+      temperature: 0.6,
     });
 
     let updatedHtml =
